@@ -9,4 +9,7 @@ y = iris.target
 df = pd.DataFrame(x, columns=['Długość działki[cm]', 'Szerokość działki[cm]', 'Długość płatka[cm]', 'Szerokość płatka[cm]'])
 df['gatunek'] = y
 
-print("Liczba wierszy: ", df.shape)
+print("Liczba wierszy: ", df.shape[0])
+print("Liczba cech: ", df.shape[1])
+print("Podział na klasy:\n", df['gatunek'].value_counts())
+print("Pierwsze 5 danych:\n", df.head())
