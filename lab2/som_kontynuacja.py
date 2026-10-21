@@ -54,7 +54,7 @@ def algorytm_som(przyklady, neurony, tempo_uczenia, liczba_epok):
 
     return neurony
 
-wytrenowane_neurony = algorytm_som(x_ustandaryzowane, neurony.copy(), tempo_uczenia=0.5, liczba_epok=50)
+wytrenowane_neurony = algorytm_som(x_ustandaryzowane, neurony.copy(), tempo_uczenia=0.4, liczba_epok=80)
 przypisane_etykiety = [znajdz_zwyciezce(kwiatek, wytrenowane_neurony) for kwiatek in x_ustandaryzowane]
 ilosci_elementow = {0: 0, 1: 0, 2: 0}
 for etykieta in przypisane_etykiety:
@@ -69,10 +69,11 @@ print("\nOstateczne wagi neuronów (pozycje w 4-wymiarowej przestrzeni):")
 print(np.round(wytrenowane_neurony, 2))
 
 # [LAB 2] Macierz rozkładu przykładów
-macierz_wynikow = np.zeros((3, 3))
+macierz_wynikow = np.zeros((3, 3), dtype=int)
 for nazwa_gatunku, przypisany_neuron in zip(y, przypisane_etykiety):
     macierz_wynikow[przypisany_neuron][nazwa_gatunku] += 1
-print(f"\nNeuron | Setosa | Versicolor | Virginica")
+print("\nMacierz rozkładu przykładów")
+print("Neuron | Setosa | Versicolor | Virginica")
 print("-" * 45)
 for i in range(3):
-    print(f"N{i+1}     | {macierz_wynikow[i][0]}    | {macierz_wynikow[i][1]}     | {macierz_wynikow[i][2]}")
+    print(f"N{i+1}     | {macierz_wynikow[i][0]}     | {macierz_wynikow[i][1]}         | {macierz_wynikow[i][2]}")
