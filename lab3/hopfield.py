@@ -156,3 +156,77 @@ def wyswietlPrzedIPoZaszumieniu(wzorzec, poziomZaszumienia):
         os.axis('off')
     plt.show()
 
+liczba_neuronow = 64
+wagi = np.zeros((liczba_neuronow, liczba_neuronow))
+
+for wzorzec in wzorce[:3]:
+    wzorzec_na_plasko = wzorzec.flatten()
+    for i in range(liczba_neuronow):
+        for j in range(liczba_neuronow):
+            if i != j:
+                wagi[i, j] += wzorzec_na_plasko[i] * wzorzec_na_plasko[j]
+
+wagi = wagi / liczba_neuronow
+
+def oblicz_pole_lokalne(i, wagi, stan_sieci):
+    h_i = np.dot(wagi[i], stan_sieci)
+    return h_i
+
+def aktualizuj_neuron(i, wagi, stan_sieci):
+    h_i = oblicz_pole_lokalne(i, wagi, stan_sieci)
+    if h_i > 0:
+        stan_sieci[i] = 1
+    elif h_i < 0:
+        stan_sieci[i] = -1
+    elif h_i == 0:
+        stan_sieci[i] = 0
+    return stan_sieci
+
+def odtworz_obraz(zaszumiony_obraz, wagi, maks_iteracji):
+    stan_sieci = zaszumiony_obraz.copy().flatten()
+    liczba_neuronow = len(stan_sieci)
+    for i in range(maks_iteracji):
+        liczba_zmian = 0
+        for i in range(liczba_neuronow):
+            stary_stan = stan_sieci[i]
+            stan_sieci = aktualizuj_neuron(i, wagi, stan_sieci)
+            if stary_stan != stan_sieci[i]:
+                liczba_zmian += 1
+        if liczba_zmian == 0:
+            break
+    return stan_sieci.reshape((8, 8))
+
+print("\n===Testy macierzy wag===\n")
+print("\nCzy macierz wag jest symetryczna?")
+czy_symetryczna = np.allclose(wagi, wagi.T)
+print(czy_symetryczna)
+print("\nCzy na przekatnej są zera?")
+przekatna = np.diag(wagi)
+czy_zera_na_przekatnej = np.all(przekatna == 0)
+print(czy_zera_na_przekatnej)
+wzorzec_testowy = wzorce[0]
+zaszumiony_testowy = wzorce_zaszumione_30[0]
+odtworzony = odtworz_obraz(wzorzec_testowy, wagi, 10)
+odtworzony_zaszumiony = odtworz_obraz(zaszumiony_testowy, wagi, 10)
+fig, osie = plt.subplots(2, 2, figsize=(10, 8))
+
+osie[0, 0].imshow(wzorzec_testowy, cmap=moje_kolory)
+osie[0, 0].set_title("Oryginalny, czysty wzorzec")
+osie[0, 0].axis('off')
+
+osie[0, 1].imshow(odtworzony, cmap=moje_kolory)
+osie[0, 1].set_title("Odtworzony z czystego")
+osie[0, 1].axis('off')
+
+# Wiersz 2: Test na zaszumionym wzorcu
+osie[1, 0].imshow(zaszumiony_testowy, cmap=moje_kolory)
+osie[1, 0].set_title("Zaszumiony wzorzec (30% szumu)")
+osie[1, 0].axis('off')
+
+osie[1, 1].imshow(odtworzony_zaszumiony, cmap=moje_kolory)
+osie[1, 1].set_title("Odtworzony z zaszumionego")
+osie[1, 1].axis('off')
+
+plt.tight_layout()
+plt.show()
+
