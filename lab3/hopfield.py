@@ -127,22 +127,32 @@ def dodajSzum(obraz, poziom_szumu):
 
     return zaszumiony_obraz.reshape((8, 8))
 
-wzorzec = cyfra_0
-szum_10 = dodajSzum(wzorzec, 10)
-szum_20 = dodajSzum(wzorzec, 20)
-szum_30 = dodajSzum(wzorzec, 30)
+wzorce = [cyfra_0, cyfra_1, cyfra_2, cyfra_3, cyfra_4,
+          cyfra_5, cyfra_6, cyfra_7, cyfra_8, cyfra_9]
 
-fig, osie = plt.subplots(1, 4, figsize=(12, 3))
+wzorce_zaszumione_10 = []
+wzorce_zaszumione_20 = []
+wzorce_zaszumione_30 = []
 
-osie[0].imshow(wzorzec, cmap=moje_kolory)
-osie[0].set_title("Oryginał")
-osie[1].imshow(szum_10, cmap=moje_kolory)
-osie[1].set_title("10% szumu")
-osie[2].imshow(szum_20, cmap=moje_kolory)
-osie[2].set_title("20% szumu")
-osie[3].imshow(szum_30, cmap=moje_kolory)
-osie[3].set_title("30% szumu")
+for wzorzec in wzorce:
+    wzorzec_zaszumiony = dodajSzum(wzorzec, 10)
+    wzorce_zaszumione_10.append(wzorzec_zaszumiony)
 
-for os in osie:
-    os.axis('off')
-plt.show()
+for wzorzec in wzorce:
+    wzorzec_zaszumiony = dodajSzum(wzorzec, 20)
+    wzorce_zaszumione_20.append(wzorzec_zaszumiony)
+
+for wzorzec in wzorce:
+    wzorzec_zaszumiony = dodajSzum(wzorzec, 30)
+    wzorce_zaszumione_30.append(wzorzec_zaszumiony)
+
+def wyswietlPrzedIPoZaszumieniu(wzorzec, poziomZaszumienia):
+    fig, osie = plt.subplots(1, 2)
+    osie[0].imshow(wzorzec, cmap=moje_kolory)
+    osie[0].set_title("Oryginał")
+    osie[1].imshow(dodajSzum(wzorzec, poziomZaszumienia), cmap=moje_kolory)
+    osie[1].set_title(f"{poziomZaszumienia}% zaszumienia")
+    for os in osie:
+        os.axis('off')
+    plt.show()
+
